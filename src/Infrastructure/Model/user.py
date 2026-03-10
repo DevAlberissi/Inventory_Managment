@@ -5,7 +5,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    cnpj = db.Column(db.String(14), nullable=False)
+    cnpj = db.Column(db.String(14), unique=True, nullable=False)
     celular = db.Column(db.String(11), nullable=False)
     status = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -16,7 +16,6 @@ class User(db.Model):
             "cnpj": self.cnpj,
             "email": self.email,
             "celular": self.celular,
-            "password": self.password,
             "status": self.status
         }
 
