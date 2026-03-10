@@ -1,4 +1,7 @@
-Flask>=3.0
-Flask-SQLALchemy>=3.1
-Werkzeug>=3.0
-SQLALchemy>=2.0
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-JWT-Extended==4.6.0
+twilio==9.0.5
+mysql-connector-python==8.3.0
+SQLAlchemy==2.0.29
+Werkzeug==3.0.3
