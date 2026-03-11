@@ -1,53 +1,58 @@
-from src.Domain.user import UserDomain
-from src.Infrastructure.Model.user import User
-from src.Infrastructure.http.whats_app import twilio_whatsapp_code
-from src.config.data_base import db
-import random
-from flask_jwt_extended import create_access_token
+from flask import request, jsonify, make_response
+from src.Application.Service.user_service import UserService
 
-class UserService:
+class UserController:
     @staticmethod
-    def generate_activation_code():
-        return str(random.randint(1000, 9999))
+    def register_user():
+        data = request.get_json()
+        name = data.get('name')
+        cnpj = data.get('cnpj')
+        email = data.get('email')
+        cell = data.get('cell')
+        password = data.get('password')
 
-    @staticmethod
-    def create_user(name, email, cnpj, cell, password):
-        code = UserService.generate_activation_code()
+        if not name or not email or not password or not cnpj:
+            return make_response(jsonify({"erro": "Missing required fields"}), 400)
 
-        user = User(name=name, cnpj=cnpj, email=email, cell=cell, password=password, activation_code=code)
-        db.session.add(user)
-        db.session.commit()
-        #twilio_whatsapp_code(user.cell, code)
-        return UserDomain(user.id, user.name, user.email)
-
-    @staticmethod
-    def activate_user(email, code):
-        user = User.query.filter_by(email=email).first()
-
-        if not user:
-            return False
-
-        if user.activation_code != code:
-            return False
-
-        user.status = True
-        user.activation_code = None
-        db.session.commit()
-        return True
+        user = UserService.create_user(name, email, cnpj, cell, password)
+        return make_response(jsonify({
+            "mensagem": "Seller cadastrado. Código enviado no WhatsApp",
+            "usuarios": user.to_dict()
+        }), 201)
 
     @staticmethod
-    def login(email, password):
-        user = User.query.filter_by(email=email).first()
+    def activate_user():
+        data = request.get_json()
+        email = data.get("email")
+        code = data.get("code")
 
-        if not user:
-            return None, "Usuário não encontrado"
+        if not email or not code:
+            return make_response(jsonify({"erro": "Dados inválidos"}), 400)
 
-        if user.password != password:
-            return None, "Senha inválida"
+        activated = UserService.activate_user(email, code)
 
-        if user.status == False:
-            return {"msg": "Conta não ativada"}, 403
+        if not activated:
+            return make_response(jsonify({"erro": "Código inválido"}), 400)
 
-        token = create_access_token(identity=str(user.id))
-        return token,
+        return make_response(jsonify({
+            "mensagem": "Conta ativada com sucesso"
+        }), 200)
 
+    @staticmethod
+    def login_user():
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+
+        if not email or not password:
+            return make_response(jsonify({"erro": "Dados inválidos"}), 400)
+
+        token, error = UserService.login(email, password)
+
+        if error:
+            return make_response(jsonify({"erro": error}), 401)
+
+        return make_response(jsonify({
+            "mensagem": "Login realizado",
+            "token": token
+        }), 200)
