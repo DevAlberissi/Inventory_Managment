@@ -11,13 +11,15 @@ class UserService:
         return str(random.randint(1000, 9999))
 
     @staticmethod
-    def create_user(name, email, cnpj, cell, password):
+    def create_user(name, email, cnpj, celular, password):
         code = UserService.generate_activation_code()
 
-        user = User(name=name, cnpj=cnpj, email=email, cell=cell, password=password, activation_code=code)
+        user = User(name=name, cnpj=cnpj, email=email, celular=celular, password=password, activation_code=code)
         db.session.add(user)
         db.session.commit()
-        #twilio_whatsapp_code(user.cell, code)
+        
+        twilio_whatsapp_code(user.celular, code)
+
         return UserDomain(user.id, user.name, user.email)
 
     @staticmethod
