@@ -48,8 +48,8 @@ class UserService:
             return None, "Senha inválida"
 
         if user.status == False:
-            return {"msg": "Conta não ativada"}, 403
+            return None, "Conta não ativada"
 
         token = create_access_token(identity=str(user.id))
-        return token,
+        return token, None
 
