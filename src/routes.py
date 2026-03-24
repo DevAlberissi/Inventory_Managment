@@ -15,11 +15,9 @@ def init_routes(app):
     def login_user():
         return UserController.login_user()
 
-    @app.route("/teste", methods=["GET"])
+    @app.route("/update", methods=["PATCH"])
     @jwt_required()
-    def teste():
+    def update_user():
         user_id = int(get_jwt_identity())
-        return jsonify({
-            "mensagem": "Acesso autorizado",
-            "user_id": user_id
-        })
+        return UserController.update_user(user_id)
+    

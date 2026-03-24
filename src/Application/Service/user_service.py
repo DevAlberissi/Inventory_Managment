@@ -51,3 +51,19 @@ class UserService:
         token = create_access_token(identity=str(user.id))
         return token,
 
+    @staticmethod
+    def update_user(user_id, data):
+        user = User.query.get(user_id)
+
+        if not user:
+            return False
+        
+        campos = ["name", "email", "cnpj", "celular", "password"]
+
+        for campo in campos:
+            if campo in data:
+                setattr(user, campo, data[campo])
+        
+        db.session.commit()
+        
+        return UserDomain(user.id, user.name, user.email)
