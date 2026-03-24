@@ -4,6 +4,7 @@ from src.Infrastructure.http.whats_app import twilio_whatsapp_code
 from src.config.data_base import db
 import random
 from flask_jwt_extended import create_access_token
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserService:
     @staticmethod
@@ -13,8 +14,9 @@ class UserService:
     @staticmethod
     def create_user(name, email, cnpj, celular, password):
         code = UserService.generate_activation_code()
+        senha_hash = generate_password_hash(password)
 
-        user = User(name=name, cnpj=cnpj, email=email, celular=celular, password=password, activation_code=code)
+        user = User(name=name, cnpj=cnpj, email=email, celular=celular, password=senha_hash, activation_code=code)
         db.session.add(user)
         db.session.commit()
         
@@ -44,7 +46,7 @@ class UserService:
         if not user:
             return None, "Usuário não encontrado"
 
-        if user.password != password:
+        if not check_password_hash(user.password, password):
             return None, "Senha inválida"
 
         if user.status == False:
@@ -65,6 +67,9 @@ class UserService:
         for campo in campos:
             if campo in data:
                 setattr(user, campo, data[campo])
+        
+        if "password" in data:
+            user.password = generate_password_hash(data["password"])
         
         db.session.commit()
        
