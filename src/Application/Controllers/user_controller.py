@@ -57,3 +57,18 @@ class UserController:
             "mensagem": "Login realizado",
             "token": token
         }), 200)
+    
+    @staticmethod
+    def update_user(user_id):
+        data = request.get_json()
+
+        user = UserService.update_user(user_id, data)
+
+        if user:
+            return make_response(jsonify({
+            "mensagem": "Atualização realizada com sucesso!",
+            "usuarios": user.to_dict()
+            }), 200)
+        else:
+           return make_response(jsonify({"erro": "Usuário não encontrado"}), 404)
+        
