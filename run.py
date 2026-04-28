@@ -5,11 +5,13 @@ from src.config.data_base import init_db
 from src.routes import init_routes
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["TWILIO_ACCOUNT_SID"] = os.getenv("TWILIO_ACCOUNT_SID")
