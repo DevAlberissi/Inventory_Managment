@@ -30,6 +30,7 @@ def init_db(app):
     with app.app_context():
         # Garante o registro dos modelos antes da criação das tabelas.
         from src.Infrastructure.Model.user import User
-        
+        from src.Infrastructure.Model.product import Product
+
         db.create_all()
 

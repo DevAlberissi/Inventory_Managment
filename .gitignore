@@ -21,3 +21,12 @@ env/
 
 # OS
 .DS_Store
+# Added by code-review-graph
+.code-review-graph/
+
+# AI / Claude Code configuration
+.claude/
+.mcp.json
+.opencode.json
+CLAUDE.md
+AGENTS.md
