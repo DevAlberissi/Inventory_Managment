@@ -7,8 +7,8 @@ class Product(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=0)
     status = db.Column(db.Boolean, nullable=False, default=True)
-    image_url = db.Column(db.String(255), nullable=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    documentos = db.relationship('Documento', backref='product', lazy=True, cascade='all, delete-orphan')
 
     def to_dict(self):
         return {
@@ -17,6 +17,5 @@ class Product(db.Model):
             "price": float(self.price),
             "quantity": self.quantity,
             "status": self.status,
-            "image_url": self.image_url,
             "seller_id": self.seller_id
         }

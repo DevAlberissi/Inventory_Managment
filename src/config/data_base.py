@@ -31,6 +31,7 @@ def init_db(app):
         # Garante o registro dos modelos antes da criação das tabelas.
         from src.Infrastructure.Model.user import User
         from src.Infrastructure.Model.product import Product
+        from src.Infrastructure.Model.documento import Documento
 
         db.create_all()
 

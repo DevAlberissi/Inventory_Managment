@@ -1,20 +1,5 @@
-import os
-import uuid
-from flask import request, jsonify, make_response, current_app
+from flask import request, jsonify, make_response
 from src.Application.Service.product_service import ProductService
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def save_image(file):
-    ext = file.filename.rsplit('.', 1)[1].lower()
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    images_dir = os.path.join(current_app.root_path, 'static', 'images')
-    os.makedirs(images_dir, exist_ok=True)
-    file.save(os.path.join(images_dir, filename))
-    return f"static/images/{filename}"
 
 class ProductController:
     @staticmethod
@@ -35,13 +20,7 @@ class ProductController:
 
         status = status_raw.lower() != 'false'
 
-        image_url = None
-        if 'image' in request.files:
-            file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
-                image_url = save_image(file)
-
-        product = ProductService.create_product(seller_id, name, price, quantity, status, image_url)
+        product = ProductService.create_product(seller_id, name, price, quantity, status)
         return make_response(jsonify({
             "mensagem": "Produto cadastrado com sucesso",
             "produto": product.to_dict()
@@ -86,13 +65,7 @@ class ProductController:
         if status_raw is not None:
             data['status'] = status_raw.lower() != 'false'
 
-        image_url = None
-        if 'image' in request.files:
-            file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
-                image_url = save_image(file)
-
-        product, error = ProductService.update_product(product_id, seller_id, data, image_url)
+        product, error = ProductService.update_product(product_id, seller_id, data)
         if error == "not_found":
             return make_response(jsonify({"erro": "Produto não encontrado"}), 404)
         if error == "forbidden":
