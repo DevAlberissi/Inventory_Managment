@@ -32,6 +32,7 @@ def init_db(app):
         from src.Infrastructure.Model.user import User
         from src.Infrastructure.Model.product import Product
         from src.Infrastructure.Model.documento import Documento
+        from src.Infrastructure.Model.venda import Venda
 
         db.create_all()
 
