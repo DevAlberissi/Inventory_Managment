@@ -2,22 +2,28 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.Application.Controllers.venda_controller import VendaController
 
-venda_bp = Blueprint('vendas', __name__, url_prefix='/venda')
+vendas_bp = Blueprint('vendas', __name__, url_prefix='/vendas')
 
-@venda_bp.route("/<int:product_id>", methods=["POST"])
+@vendas_bp.route('', methods=['POST'])
 @jwt_required()
-def register_venda(product_id):
+def create_venda():
     seller_id = int(get_jwt_identity())
-    return VendaController.register_venda(seller_id, product_id)
+    return VendaController.create_venda(seller_id)
 
-@venda_bp.route("", methods=["GET"])
+@vendas_bp.route('', methods=['GET'])
 @jwt_required()
-def list_venda():
+def list_vendas():
     seller_id = int(get_jwt_identity())
-    return VendaController.list_venda(seller_id)
+    return VendaController.list_vendas(seller_id)
 
-@venda_bp.route("/<int:venda_id>", methods=["GET"])
+@vendas_bp.route('/<int:venda_id>', methods=['GET'])
 @jwt_required()
 def get_venda(venda_id):
     seller_id = int(get_jwt_identity())
     return VendaController.get_venda(seller_id, venda_id)
+
+@vendas_bp.route('/<int:venda_id>', methods=['DELETE'])
+@jwt_required()
+def delete_venda(venda_id):
+    seller_id = int(get_jwt_identity())
+    return VendaController.delete_venda(seller_id, venda_id)
