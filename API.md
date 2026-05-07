@@ -360,3 +360,133 @@ Remove um documento.
 | 401 | Token ausente ou inválido |
 | 403 | Produto do documento pertence a outro seller |
 | 404 | Documento não encontrado |
+
+---
+
+## Vendas
+
+### POST /vendas — **JWT**
+Registra uma nova venda, descontando o estoque do produto.
+
+**Body (JSON)**
+| Campo | Tipo | Obrigatório |
+|-------|------|-------------|
+| produto_id | integer | sim |
+| quantidade | integer | sim |
+
+**Resposta 201**
+```json
+{
+  "mensagem": "Venda registrada com sucesso",
+  "venda": {
+    "id": 1,
+    "produto_id": 5,
+    "seller_id": 3,
+    "quantidade": 2,
+    "preco_unitario": 19.99,
+    "created_at": "2026-05-07T14:30:00"
+  }
+}
+```
+
+**Erros**
+| Status | Descrição |
+|--------|-----------|
+| 400 | Body ausente, campos obrigatórios faltando ou tipos inválidos |
+| 401 | Token ausente ou inválido |
+| 403 | Seller inativo, produto pertence a outro seller ou produto inativo |
+| 404 | Produto não encontrado |
+| 422 | Estoque insuficiente para a quantidade solicitada |
+
+---
+
+### GET /vendas — **JWT**
+Lista todas as vendas do seller autenticado.
+
+**Resposta 200**
+```json
+{
+  "vendas": [
+    {
+      "id": 1,
+      "produto_id": 5,
+      "seller_id": 3,
+      "quantidade": 2,
+      "preco_unitario": 19.99,
+      "created_at": "2026-05-07T14:30:00",
+      "produto": {
+        "id": 5,
+        "name": "Camiseta",
+        "imagens": [
+          {
+            "id": 1,
+            "product_id": 5,
+            "nome_arquivo": "camiseta.jpg",
+            "mime_type": "image/jpeg"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+**Erros**
+| Status | Descrição |
+|--------|-----------|
+| 401 | Token ausente ou inválido |
+
+---
+
+### GET /vendas/{venda_id} — **JWT**
+Retorna uma venda específica do seller autenticado.
+
+**Parâmetros de rota**
+| Parâmetro | Tipo |
+|-----------|------|
+| venda_id | integer |
+
+**Resposta 200**
+```json
+{
+  "venda": {
+    "id": 1,
+    "produto_id": 5,
+    "seller_id": 3,
+    "quantidade": 2,
+    "preco_unitario": 19.99,
+    "created_at": "2026-05-07T14:30:00"
+  }
+}
+```
+
+**Erros**
+| Status | Descrição |
+|--------|-----------|
+| 401 | Token ausente ou inválido |
+| 403 | Venda pertence a outro seller |
+| 404 | Venda não encontrada |
+
+---
+
+### DELETE /vendas/{venda_id} — **JWT**
+Cancela uma venda e devolve a quantidade ao estoque do produto.
+
+**Parâmetros de rota**
+| Parâmetro | Tipo |
+|-----------|------|
+| venda_id | integer |
+
+**Resposta 200**
+```json
+{
+  "mensagem": "Venda cancelada com sucesso"
+}
+```
+
+**Erros**
+| Status | Descrição |
+|--------|-----------|
+| 401 | Token ausente ou inválido |
+| 403 | Venda pertence a outro seller |
+| 404 | Venda não encontrada |
