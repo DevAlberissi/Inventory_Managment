@@ -363,6 +363,49 @@ Remove um documento.
 
 ---
 
+## Dashboard
+
+### GET /dashboards — **JWT**
+Retorna KPIs agregados de produtos, resumo de vendas e as últimas 6 vendas do seller autenticado.
+
+**Resposta 200**
+```json
+{
+  "total_produtos": 12,
+  "produtos_ativos": 10,
+  "estoque_baixo": 3,
+  "valor_estoque": 4850.00,
+  "resumo_vendas": {
+    "total_vendido": 12400.00,
+    "ticket_medio": 310.00,
+    "unidades_vendidas": 87,
+    "num_vendas": 40
+  },
+  "ultimas_vendas": [
+    {
+      "id": 1,
+      "produto_id": 3,
+      "produto_nome": "Camiseta",
+      "quantidade": 2,
+      "preco_unitario": 49.90,
+      "total": 99.80,
+      "created_at": "2026-05-07T10:00:00"
+    }
+  ]
+}
+```
+
+> `estoque_baixo` conta produtos com `quantity < 5`.
+> `ticket_medio` é a média do valor por linha de venda (`quantidade × preco_unitario`).
+> `ultimas_vendas` retorna no máximo 6 vendas, ordenadas da mais recente para a mais antiga.
+
+**Erros**
+| Status | Descrição |
+|--------|-----------|
+| 401 | Token ausente ou inválido |
+
+---
+
 ## Vendas
 
 ### POST /vendas — **JWT**
