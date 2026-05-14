@@ -56,6 +56,10 @@ class UserService:
         return token, None
     
     @staticmethod
+    def get_user(user_id):
+        return User.query.get(user_id)
+
+    @staticmethod
     def update_user(user_id, data):
         user = User.query.get(user_id)
 

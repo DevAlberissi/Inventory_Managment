@@ -59,6 +59,13 @@ class UserController:
         }), 200)
     
     @staticmethod
+    def get_me(user_id):
+        user = UserService.get_user(user_id)
+        if not user:
+            return make_response(jsonify({"erro": "Usuário não encontrado"}), 404)
+        return make_response(jsonify({"usuario": user.to_dict()}), 200)
+
+    @staticmethod
     def update_user(user_id):
         data = request.get_json()
 

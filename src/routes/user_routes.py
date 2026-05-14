@@ -12,6 +12,12 @@ def register_user():
 def activate_user():
     return UserController.activate_user()
 
+@user_bp.route('/me', methods=['GET'])
+@jwt_required()
+def get_me():
+    user_id = int(get_jwt_identity())
+    return UserController.get_me(user_id)
+
 @user_bp.route('/me', methods=['PATCH'])
 @jwt_required()
 def update_user():
