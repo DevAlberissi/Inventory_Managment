@@ -33,3 +33,9 @@ def update_product(product_id):
 def deactivate_product(product_id):
     seller_id = int(get_jwt_identity())
     return ProductController.deactivate_product(seller_id, product_id)
+
+@products_bp.route('/<int:product_id>/activate', methods=['PATCH'])
+@jwt_required()
+def activate_product(product_id):
+    seller_id = int(get_jwt_identity())
+    return ProductController.activate_product(seller_id, product_id)

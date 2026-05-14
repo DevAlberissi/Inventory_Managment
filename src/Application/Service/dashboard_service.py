@@ -7,7 +7,8 @@ class DashboardService:
     @staticmethod
     def get_dashboard(seller_id):
         total_produtos = db.session.query(func.count(Product.id)).filter(
-            Product.seller_id == seller_id
+            Product.seller_id == seller_id,
+            Product.status == True
         ).scalar() or 0
 
         produtos_ativos = db.session.query(func.count(Product.id)).filter(
@@ -17,13 +18,15 @@ class DashboardService:
 
         estoque_baixo = db.session.query(func.count(Product.id)).filter(
             Product.seller_id == seller_id,
+            Product.status == True,
             Product.quantity < 5
         ).scalar() or 0
 
         valor_estoque = db.session.query(
             func.coalesce(func.sum(Product.price * Product.quantity), 0)
         ).filter(
-            Product.seller_id == seller_id
+            Product.seller_id == seller_id,
+            Product.status == True
         ).scalar() or 0
 
         vendas_stats = db.session.query(

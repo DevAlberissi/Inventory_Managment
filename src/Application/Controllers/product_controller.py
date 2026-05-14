@@ -83,3 +83,12 @@ class ProductController:
         if error == "forbidden":
             return make_response(jsonify({"erro": "Acesso não autorizado"}), 403)
         return make_response(jsonify({"mensagem": "Produto inativado com sucesso"}), 200)
+
+    @staticmethod
+    def activate_product(seller_id, product_id):
+        success, error = ProductService.activate_product(product_id, seller_id)
+        if error == "not_found":
+            return make_response(jsonify({"erro": "Produto não encontrado"}), 404)
+        if error == "forbidden":
+            return make_response(jsonify({"erro": "Acesso não autorizado"}), 403)
+        return make_response(jsonify({"mensagem": "Produto ativado com sucesso"}), 200)

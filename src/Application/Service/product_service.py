@@ -71,3 +71,15 @@ class ProductService:
         product.status = False
         db.session.commit()
         return True, None
+
+    @staticmethod
+    def activate_product(product_id, seller_id):
+        product = Product.query.get(product_id)
+        if not product:
+            return False, "not_found"
+        if product.seller_id != seller_id:
+            return False, "forbidden"
+
+        product.status = True
+        db.session.commit()
+        return True, None
